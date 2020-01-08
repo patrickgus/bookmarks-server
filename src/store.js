@@ -6,6 +6,6 @@ const bookmarks = [
     description: "Buy literally anything",
     rating: 5
   }
-]
+];
 
 module.exports = bookmarks;
