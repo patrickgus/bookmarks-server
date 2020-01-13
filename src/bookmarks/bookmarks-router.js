@@ -1,6 +1,6 @@
 const express = require("express");
-const xss = require("xss");
 const { isWebUri } = require("valid-url");
+const xss = require("xss");
 const logger = require("../logger");
 const BookmarksService = require("./bookmarks-service");
 
@@ -12,11 +12,11 @@ const serializeBookmark = bookmark => ({
   title: xss(bookmark.title),
   url: bookmark.url,
   description: xss(bookmark.description),
-  rating: bookmark.rating
+  rating: Number(bookmark.rating)
 });
 
 bookmarksRouter
-  .route("/")
+  .route("/bookmarks")
   .get((req, res, next) => {
     BookmarksService.getAllBookmarks(req.app.get("db"))
       .then(bookmarks => {
@@ -35,16 +35,21 @@ bookmarksRouter
     }
 
     const { title, url, description, rating } = req.body;
+
     const ratingNum = Number(rating);
 
     if (!Number.isInteger(ratingNum) || ratingNum < 0 || ratingNum > 5) {
       logger.error(`Invalid rating '${rating}' supplied`);
-      return res.status(400).send(`'rating' must be a number between 0 and 5`);
+      return res.status(400).send({
+        error: { message: `'rating' must be a number between 0 and 5` }
+      });
     }
 
     if (!isWebUri(url)) {
       logger.error(`Invalid url '${url}' supplied`);
-      return res.status(400).send(`'url' must be a valid URL`);
+      return res.status(400).send({
+        error: { message: `'url' must be a valid URL` }
+      });
     }
 
     const newBookmark = { title, url, description, rating };
