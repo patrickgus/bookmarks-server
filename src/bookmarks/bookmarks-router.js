@@ -3,7 +3,7 @@ const express = require("express");
 const xss = require("xss");
 const logger = require("../logger");
 const BookmarksService = require("./bookmarks-service");
-const { getBookmarkValidationError } = require("./bookmark-validator");
+const { getBookmarkValidationError } = require("./bookmarks-validator");
 
 const bookmarksRouter = express.Router();
 const bodyParser = express.json();
